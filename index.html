@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIGRE AGORA | Link Bio</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts: Orbitron (Headers) & Rajdhani (UI/Text) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neon: {
+                            green: '#4ade80',
+                            teal: '#2dd4bf',
+                            dark: '#0a0a0a'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Rajdhani', 'sans-serif'],
+                        display: ['Orbitron', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* --- CORE SETTINGS --- */
+        body {
+            background-color: #000000;
+            color: #e5e5e5;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- SCROLLBAR --- */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #4ade80; border-radius: 3px; }
+
+        /* --- HOLO CARD SYSTEM --- */
+        .holo-card {
+            background: rgba(10, 10, 10, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            box-shadow: 
+                inset 0 0 20px rgba(74, 222, 128, 0.05),
+                0 0 15px rgba(0, 0, 0, 0.5);
+            transition: all 0.1s ease-out; /* Fast transition for smooth tilt */
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .holo-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(74, 222, 128, 0.1),
+                transparent
+            );
+            transition: 0.5s;
+            transform: skewX(-25deg);
+            pointer-events: none;
+        }
+
+        .holo-card:hover::before {
+            left: 100%;
+            transition: 0.7s;
+        }
+
+        .holo-card:hover {
+            border-color: rgba(74, 222, 128, 0.6);
+            box-shadow: 
+                inset 0 0 30px rgba(74, 222, 128, 0.1),
+                0 0 25px rgba(74, 222, 128, 0.2);
+        }
+
+        /* --- TEXT GLOWS --- */
+        .text-neon {
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.5), 0 0 20px rgba(74, 222, 128, 0.3);
+        }
+        
+        .logo-glow {
+            text-shadow: 0 0 15px rgba(74, 222, 128, 0.8), 0 0 30px rgba(45, 212, 191, 0.6);
+        }
+
+        /* --- CSS LOGO CONSTRUCTION --- */
+        .ma-logo {
+            font-family: 'Orbitron', sans-serif;
+            position: relative;
+            display: inline-block;
+            border: 2px solid #4ade80;
+            padding: 5px 15px;
+            border-radius: 4px;
+            background: rgba(0,0,0,0.5);
+            box-shadow: 0 0 15px rgba(74, 222, 128, 0.4);
+        }
+        .ma-logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px; right: -5px;
+            width: 10px; height: 10px;
+            border-bottom: 2px solid #2dd4bf;
+            border-right: 2px solid #2dd4bf;
+        }
+        .ma-logo::before {
+            content: '';
+            position: absolute;
+            top: -5px; left: -5px;
+            width: 10px; height: 10px;
+            border-top: 2px solid #2dd4bf;
+            border-left: 2px solid #2dd4bf;
+        }
+
+        /* --- CANVAS --- */
+        #neural-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 0;
+            pointer-events: none; /* Let clicks pass through if needed, but we track mouse via JS */
+        }
+
+        /* --- UTILS --- */
+        .z-content { position: relative; z-index: 10; }
+    </style>
+</head>
+<body class="selection:bg-neon-green selection:text-black">
+
+    <!-- MOTOR GRÁFICO -->
+    <canvas id="neural-canvas"></canvas>
+
+    <!-- CONTAINER PRINCIPAL -->
+    <main class="z-content min-h-screen flex flex-col items-center justify-center p-6 w-full max-w-lg mx-auto space-y-8">
+        
+        <!-- HEADER -->
+        <header class="text-center w-full animate-[fadeIn_1s_ease-in]">
+            <!-- CSS Logo -->
+            <div class="mb-6 hover:scale-105 transition-transform duration-300 cursor-default">
+                <div class="ma-logo">
+                    <span class="text-4xl font-black text-white tracking-tighter">MA</span>
+                </div>
+            </div>
+            
+            <h1 class="text-5xl font-display font-black text-white tracking-widest mb-2 logo-glow">
+                MIGRE AGORA
+            </h1>
+            <div class="flex items-center justify-center gap-3">
+                <div class="h-[1px] w-8 bg-neon-green opacity-50"></div>
+                <p class="text-neon-teal font-sans tracking-[0.2em] text-sm font-semibold uppercase">
+                    O FÍSICO NUNCA FOI O FINAL
+                </p>
+                <div class="h-[1px] w-8 bg-neon-green opacity-50"></div>
+            </div>
+        </header>
+
+        <!-- MANIFESTO -->
+        <section class="w-full holo-card rounded-xl p-6 md:p-8 tilt-card" data-tilt-max="5">
+            <h2 class="text-neon-green text-xs font-display tracking-widest mb-3 flex items-center gap-2">
+                <span class="w-2 h-2 bg-neon-green rounded-full animate-pulse"></span>
+                MANIFESTO_V1.0
+            </h2>
+            <p class="text-gray-300 text-lg md:text-xl font-light leading-relaxed text-justify border-l-2 border-neon-teal/30 pl-4">
+                A <strong class="text-white">Migre Agora</strong> é uma iniciativa de emancipação digital. Eliminamos intermediários e taxas abusivas através da <em class="text-neon-green not-italic">Arquitetura de Arquivo Único</em>. Democratizando a tecnologia de ponta.
+            </p>
+        </section>
+
+        <!-- CANAIS (LINKS) -->
+        <nav class="w-full flex flex-col gap-4">
+            
+            <!-- YouTube Button -->
+            <a href="https://www.youtube.com/@MigreAgora" target="_blank" class="tilt-card holo-card group relative flex items-center justify-between p-5 rounded-lg no-underline text-white overflow-hidden transform transition-transform" data-tilt-max="10">
+                <div class="flex items-center gap-4 z-10">
+                    <div class="bg-red-600/20 p-2 rounded-md border border-red-500/30 group-hover:bg-red-600/40 transition-colors">
+                        <!-- SVG YouTube -->
+                        <svg class="w-6 h-6 text-red-500 group-hover:text-red-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                        </svg>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-display font-bold text-lg tracking-wide group-hover:text-neon-green transition-colors">YOUTUBE</span>
+                        <span class="text-xs text-gray-400 font-mono tracking-wider">ACESSO GRATUITO</span>
+                    </div>
+                </div>
+                <div class="z-10 text-neon-green opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+                    ➔
+                </div>
+            </a>
+
+            <!-- Instagram Button -->
+            <a href="https://www.instagram.com/migreagora/" target="_blank" class="tilt-card holo-card group relative flex items-center justify-between p-5 rounded-lg no-underline text-white overflow-hidden transform transition-transform" data-tilt-max="10">
+                <div class="flex items-center gap-4 z-10">
+                    <div class="bg-fuchsia-600/20 p-2 rounded-md border border-fuchsia-500/30 group-hover:bg-fuchsia-600/40 transition-colors">
+                        <!-- SVG Instagram -->
+                        <svg class="w-6 h-6 text-fuchsia-500 group-hover:text-fuchsia-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-display font-bold text-lg tracking-wide group-hover:text-neon-green transition-colors">INSTAGRAM</span>
+                        <span class="text-xs text-gray-400 font-mono tracking-wider">CONTEÚDO DIÁRIO</span>
+                    </div>
+                </div>
+                <div class="z-10 text-neon-green opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+                    ➔
+                </div>
+            </a>
+        </nav>
+
+        <!-- FOOTER -->
+        <footer class="mt-12 text-center border-t border-gray-800 pt-6 w-full">
+            <p class="text-neon-green font-display text-sm tracking-widest font-bold">MIGRE AGORA © 2025</p>
+            <p class="text-xs text-gray-600 font-mono mt-1 flex items-center justify-center gap-2">
+                <span class="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                SYSTEM ONLINE
+            </p>
+        </footer>
+    </main>
+
+    <!-- JS: CANVAS ENGINE & 3D TILT PHYSICS -->
+    <script>
+        // --- 1. NEURAL CONSTELLATION ENGINE ---
+        const canvas = document.getElementById('neural-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+        let particles = [];
+        const config = {
+            particleCount: 60, // Quantidade de nós
+            connectionDistance: 120, // Distância para conectar
+            mouseDistance: 150, // Raio de influência do mouse
+            baseSpeed: 0.3, // Velocidade base
+        };
+
+        let mouse = { x: null, y: null };
+        let scrollY = 0;
+        let scrollVelocity = 0;
+
+        // Resize
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Recalculate particle count based on screen area
+            config.particleCount = Math.floor((width * height) / 12000); 
+            initParticles();
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * config.baseSpeed;
+                this.vy = (Math.random() - 0.5) * config.baseSpeed;
+                this.size = Math.random() * 2 + 1;
+                this.color = Math.random() > 0.5 ? '#4ade80' : '#2dd4bf'; // Green or Teal
+            }
+
+            update() {
+                // Scroll "Warp" Effect
+                // Quando rola a página, as partículas aceleram verticalmente
+                this.y += this.vy + (scrollVelocity * 0.5); 
+                this.x += this.vx;
+
+                // Mouse Interaction (Repulsão Suave)
+                if (mouse.x != null) {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx*dx + dy*dy);
+                    
+                    if (distance < config.mouseDistance) {
+                        const forceDirectionX = dx / distance;
+                        const forceDirectionY = dy / distance;
+                        const force = (config.mouseDistance - distance) / config.mouseDistance;
+                        const directionX = forceDirectionX * force * 2; // Força de repulsão
+                        const directionY = forceDirectionY * force * 2;
+                        
+                        this.x -= directionX;
+                        this.y -= directionY;
+                    }
+                }
+
+                // Screen Wrap (Infinite Loop)
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height;
+                if (this.y > height) this.y = 0;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < config.particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            // Decay scroll velocity
+            scrollVelocity *= 0.95;
+
+            // Update & Draw Particles
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                // Draw Connections
+                for (let j = i; j < particles.length; j++) {
+                    let dx = particles[i].x - particles[j].x;
+                    let dy = particles[i].y - particles[j].y;
+                    let distance = Math.sqrt(dx*dx + dy*dy);
+
+                    if (distance < config.connectionDistance) {
+                        ctx.beginPath();
+                        let opacity = 1 - (distance / config.connectionDistance);
+                        ctx.strokeStyle = `rgba(74, 222, 128, ${opacity * 0.2})`; // Green transparency
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        // Event Listeners
+        window.addEventListener('resize', resize);
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.x;
+            mouse.y = e.y;
+        });
+        window.addEventListener('mouseleave', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+        
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', () => {
+            const st = window.pageYOffset || document.documentElement.scrollTop;
+            scrollVelocity = st - lastScrollTop;
+            lastScrollTop = st <= 0 ? 0 : st;
+        }, false);
+
+        // Init
+        resize();
+        animate();
+
+
+        // --- 2. 3D TILT EFFECT (PHYSICS) ---
+        const cards = document.querySelectorAll('.tilt-card');
+
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left; // Mouse x position within the element
+                const y = e.clientY - rect.top; // Mouse y position within the element
+                
+                // Calculate percentage
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // Get Max Tilt from data attribute or default to 10
+                const maxTilt = card.getAttribute('data-tilt-max') || 10;
+                
+                // Calculate rotation (inverting Y axis for natural feel)
+                const rotateX = ((y - centerY) / centerY) * -maxTilt; 
+                const rotateY = ((x - centerX) / centerX) * maxTilt;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+            });
+        });
+
+    </script>
+</body>
+</html>
