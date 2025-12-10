@@ -91,7 +91,7 @@
 
         /* SPECIFIC GLOWS */
         .logo-glow {
-            filter: drop-shadow(0 0 15px rgba(74, 222, 128, 0.4));
+            filter: drop-shadow(0 0 25px rgba(74, 222, 128, 0.5));
         }
 
         .neon-text-green {
@@ -117,21 +117,14 @@
         .btn-insta:hover .icon-insta {
             filter: drop-shadow(0 0 8px #E1306C);
         }
-
-        /* INSTAGRAM GRADIENT TEXT */
-        .text-gradient-insta {
-            background: -webkit-linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center selection:bg-neon-green selection:text-black relative">
+<body class="min-h-screen flex flex-col items-center justify-center selection:bg-neon-green selection:text-black relative bg-[#050505]">
 
     <!-- VIDEO BACKGROUND -->
-    <div class="fixed top-0 left-0 w-full h-full -z-20 overflow-hidden">
-        <video autoplay loop muted playsinline class="w-full h-full object-cover">
-            <!-- Using one of the provided video files -->
+    <!-- Added webkit-playsinline and playsinline for better mobile support -->
+    <div class="fixed top-0 left-0 w-full h-full -z-20 overflow-hidden bg-[#050505]">
+        <video autoplay loop muted playsinline webkit-playsinline class="w-full h-full object-cover opacity-90">
             <source src="00:04.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
@@ -146,17 +139,9 @@
         <header class="flex flex-col items-center text-center space-y-4 animate-float">
             <!-- Logo with Tilt -->
             <div class="tilt-element cursor-pointer mb-2">
-                <!-- Assuming logo.png exists locally, using a placeholder SVG fallback if it fails for preview purposes -->
+                <!-- Removed fallback div, increased size to w-48 (approx 12rem) -->
                 <img src="logo.png" alt="Migre Agora Logo" 
-                     class="w-32 h-32 object-contain logo-glow"
-                     onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
-                
-                <!-- Fallback Icon (Only shows if logo.png is missing) -->
-                <div id="logo-fallback" style="display:none;" class="w-32 h-32 rounded-full border border-neon-green/30 flex items-center justify-center bg-black/20 backdrop-blur logo-glow">
-                    <svg class="w-16 h-16 text-neon-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                </div>
+                     class="w-48 h-48 object-contain logo-glow transition-transform duration-500 hover:scale-105">
             </div>
 
             <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-white mt-4">
@@ -167,7 +152,7 @@
             </p>
         </header>
 
-        <!-- SECTION 2: CHANNELS (REORDERED: NOW ABOVE MANIFESTO) -->
+        <!-- SECTION 2: CHANNELS -->
         <nav class="w-full flex flex-col gap-4">
             
             <!-- YouTube Button -->
@@ -221,7 +206,7 @@
 
         </nav>
 
-        <!-- SECTION 3: MANIFESTO (REORDERED: NOW BELOW CHANNELS) -->
+        <!-- SECTION 3: MANIFESTO -->
         <section class="w-full tilt-element">
             <div class="glass-panel rounded-2xl p-8 text-center relative overflow-hidden group">
                 <!-- Subtle Gradient Overlay -->
@@ -284,7 +269,6 @@
             // Reset to flat state smoothly
             this.style.transform = `perspective(1000px) scale(1) rotateX(0) rotateY(0)`;
         }
-
     </script>
 </body>
 </html>
