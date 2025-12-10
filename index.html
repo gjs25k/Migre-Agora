@@ -7,33 +7,39 @@
 <link rel="manifest" href="/site.webmanifest">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MIGRE AGORA</title>
+    <title>MIGRE AGORA | Hub</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Fonts: Orbitron (Headers) & Rajdhani (UI/Text) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+    <!-- Tailwind Config to extend theme -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        neon: {
-                            green: '#4ade80',
-                            teal: '#2dd4bf',
-                            dark: '#0a0a0a'
-                        }
-                    },
                     fontFamily: {
-                        sans: ['Rajdhani', 'sans-serif'],
-                        display: ['Orbitron', 'sans-serif'],
+                        sans: ['"Space Grotesk"', 'sans-serif'],
                     },
-                    backgroundImage: {
-                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                    colors: {
+                        'neon-green': '#4ade80',
+                        'void-black': '#050505',
+                        'yt-red': '#FF0000',
+                        'insta-purple': '#E1306C',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
                     }
                 }
             }
@@ -41,372 +47,243 @@
     </script>
 
     <style>
-        /* --- CORE SETTINGS --- */
+        /* CORE RESET & SCROLLBAR */
         body {
-            background-color: #000000;
-            color: #e5e5e5;
+            background-color: #050505;
+            color: white;
+            margin: 0;
+            padding: 0;
             overflow-x: hidden;
+            font-family: 'Space Grotesk', sans-serif;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- SCROLLBAR --- */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: #4ade80; border-radius: 3px; }
-
-        /* --- HOLO CARD SYSTEM --- */
-        .holo-card {
-            background: rgba(10, 10, 10, 0.4);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(74, 222, 128, 0.2);
-            box-shadow: 
-                inset 0 0 20px rgba(74, 222, 128, 0.05),
-                0 0 15px rgba(0, 0, 0, 0.5);
-            transition: all 0.1s ease-out; /* Fast transition for smooth tilt */
-            transform-style: preserve-3d;
-            position: relative;
-            overflow: hidden;
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-
-        .holo-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(74, 222, 128, 0.1),
-                transparent
-            );
-            transition: 0.5s;
-            transform: skewX(-25deg);
-            pointer-events: none;
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
         }
-
-        .holo-card:hover::before {
-            left: 100%;
-            transition: 0.7s;
-        }
-
-        .holo-card:hover {
-            border-color: rgba(74, 222, 128, 0.6);
-            box-shadow: 
-                inset 0 0 30px rgba(74, 222, 128, 0.1),
-                0 0 25px rgba(74, 222, 128, 0.2);
-        }
-
-        /* --- TEXT GLOWS --- */
-        .text-neon {
-            text-shadow: 0 0 10px rgba(74, 222, 128, 0.5), 0 0 20px rgba(74, 222, 128, 0.3);
-        }
-        
-        .logo-glow {
-            text-shadow: 0 0 15px rgba(74, 222, 128, 0.8), 0 0 30px rgba(45, 212, 191, 0.6);
-        }
-
-        /* --- CSS LOGO CONSTRUCTION --- */
-        .ma-logo {
-            font-family: 'Orbitron', sans-serif;
-            position: relative;
-            display: inline-block;
-            border: 2px solid #4ade80;
-            padding: 5px 15px;
+        ::-webkit-scrollbar-thumb {
+            background: #333;
             border-radius: 4px;
-            background: rgba(0,0,0,0.5);
-            box-shadow: 0 0 15px rgba(74, 222, 128, 0.4);
         }
-        .ma-logo::after {
-            content: '';
-            position: absolute;
-            bottom: -5px; right: -5px;
-            width: 10px; height: 10px;
-            border-bottom: 2px solid #2dd4bf;
-            border-right: 2px solid #2dd4bf;
-        }
-        .ma-logo::before {
-            content: '';
-            position: absolute;
-            top: -5px; left: -5px;
-            width: 10px; height: 10px;
-            border-top: 2px solid #2dd4bf;
-            border-left: 2px solid #2dd4bf;
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4ade80;
         }
 
-        /* --- CANVAS --- */
-        #neural-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            z-index: 0;
-            pointer-events: none; /* Let clicks pass through if needed, but we track mouse via JS */
+        /* GLASSMORPHISM UTILITIES */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(74, 222, 128, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        /* --- UTILS --- */
-        .z-content { position: relative; z-index: 10; }
+        /* 3D TILT CONTAINER */
+        .tilt-element {
+            transform-style: preserve-3d;
+            transform: perspective(1000px);
+            will-change: transform;
+        }
+
+        /* SPECIFIC GLOWS */
+        .logo-glow {
+            filter: drop-shadow(0 0 15px rgba(74, 222, 128, 0.4));
+        }
+
+        .neon-text-green {
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.6);
+        }
+
+        /* YOUTUBE HOVER FX */
+        .btn-yt:hover {
+            border-color: rgba(255, 0, 0, 0.5);
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.2), inset 0 0 10px rgba(255, 0, 0, 0.1);
+            background: rgba(255, 0, 0, 0.03);
+        }
+        .btn-yt:hover .icon-yt {
+            filter: drop-shadow(0 0 8px #FF0000);
+        }
+
+        /* INSTAGRAM HOVER FX */
+        .btn-insta:hover {
+            border-color: rgba(225, 48, 108, 0.5);
+            box-shadow: 0 0 25px rgba(225, 48, 108, 0.2), inset 0 0 10px rgba(225, 48, 108, 0.1);
+            background: rgba(225, 48, 108, 0.03);
+        }
+        .btn-insta:hover .icon-insta {
+            filter: drop-shadow(0 0 8px #E1306C);
+        }
+
+        /* INSTAGRAM GRADIENT TEXT */
+        .text-gradient-insta {
+            background: -webkit-linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
     </style>
 </head>
-<body class="selection:bg-neon-green selection:text-black">
+<body class="min-h-screen flex flex-col items-center justify-center selection:bg-neon-green selection:text-black relative">
 
-    <!-- MOTOR GRÁFICO -->
-    <canvas id="neural-canvas"></canvas>
+    <!-- VIDEO BACKGROUND -->
+    <div class="fixed top-0 left-0 w-full h-full -z-20 overflow-hidden">
+        <video autoplay loop muted playsinline class="w-full h-full object-cover">
+            <!-- Using one of the provided video files -->
+            <source src="00:04.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
 
-    <!-- CONTAINER PRINCIPAL -->
-    <main class="z-content min-h-screen flex flex-col items-center justify-center p-6 w-full max-w-lg mx-auto space-y-8">
+    <!-- OVERLAY SHADOW -->
+    <div class="fixed top-0 left-0 w-full h-full -z-10 bg-black/70 pointer-events-none"></div>
+
+    <main class="w-full max-w-2xl px-6 py-12 flex flex-col items-center gap-10 z-10">
         
-        <!-- HEADER -->
-        <header class="text-center w-full animate-[fadeIn_1s_ease-in]">
-            <!-- CSS Logo -->
-            <div class="mb-6 hover:scale-105 transition-transform duration-300 cursor-default">
-                <div class="ma-logo">
-                    <span class="text-4xl font-black text-white tracking-tighter">MA</span>
+        <!-- SECTION 1: HERO -->
+        <header class="flex flex-col items-center text-center space-y-4 animate-float">
+            <!-- Logo with Tilt -->
+            <div class="tilt-element cursor-pointer mb-2">
+                <!-- Assuming logo.png exists locally, using a placeholder SVG fallback if it fails for preview purposes -->
+                <img src="logo.png" alt="Migre Agora Logo" 
+                     class="w-32 h-32 object-contain logo-glow"
+                     onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
+                
+                <!-- Fallback Icon (Only shows if logo.png is missing) -->
+                <div id="logo-fallback" style="display:none;" class="w-32 h-32 rounded-full border border-neon-green/30 flex items-center justify-center bg-black/20 backdrop-blur logo-glow">
+                    <svg class="w-16 h-16 text-neon-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
                 </div>
             </div>
-            
-            <h1 class="text-5xl font-display font-black text-white tracking-widest mb-2 logo-glow">
+
+            <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-white mt-4">
                 MIGRE AGORA
             </h1>
-            <div class="flex items-center justify-center gap-3">
-                <div class="h-[1px] w-8 bg-neon-green opacity-50"></div>
-                <p class="text-neon-teal font-sans tracking-[0.2em] text-sm font-semibold uppercase">
-                    O FÍSICO NUNCA FOI O FINAL
-                </p>
-                <div class="h-[1px] w-8 bg-neon-green opacity-50"></div>
-            </div>
+            <p class="text-neon-green neon-text-green text-sm md:text-base tracking-[0.2em] font-medium uppercase">
+                O Físico Nunca Foi O Final
+            </p>
         </header>
 
-        <!-- MANIFESTO -->
-        <section class="w-full holo-card rounded-xl p-6 md:p-8 tilt-card" data-tilt-max="5">
-            <h2 class="text-neon-green text-xs font-display tracking-widest mb-3 flex items-center gap-2">
-                <span class="w-2 h-2 bg-neon-green rounded-full animate-pulse"></span>
-                MANIFESTO_V1.0
-            </h2>
-            <p class="text-gray-300 text-lg md:text-xl font-light leading-relaxed text-justify border-l-2 border-neon-teal/30 pl-4">
-                A <strong class="text-white">Migre Agora</strong> é uma iniciativa de emancipação digital. Eliminamos intermediários e taxas abusivas através da <em class="text-neon-green not-italic">Arquitetura de Arquivo Único</em>. Democratizando a tecnologia de ponta.
-            </p>
-        </section>
-
-        <!-- CANAIS (LINKS) -->
+        <!-- SECTION 2: CHANNELS (REORDERED: NOW ABOVE MANIFESTO) -->
         <nav class="w-full flex flex-col gap-4">
             
             <!-- YouTube Button -->
-            <a href="https://www.youtube.com/@MigreAgora" target="_blank" class="tilt-card holo-card group relative flex items-center justify-between p-5 rounded-lg no-underline text-white overflow-hidden transform transition-transform" data-tilt-max="10">
-                <div class="flex items-center gap-4 z-10">
-                    <div class="bg-red-600/20 p-2 rounded-md border border-red-500/30 group-hover:bg-red-600/40 transition-colors">
-                        <!-- SVG YouTube -->
-                        <svg class="w-6 h-6 text-red-500 group-hover:text-red-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+            <a href="https://www.youtube.com/@MigreAgora" target="_blank" class="tilt-element group no-underline">
+                <div class="btn-yt glass-panel rounded-xl p-4 flex items-center gap-4 transition-all duration-300 relative overflow-hidden">
+                    <div class="p-3 rounded-full bg-white/5 border border-white/10 group-hover:border-red-500/30 transition-colors">
+                        <!-- YouTube Icon -->
+                        <svg class="icon-yt w-8 h-8 text-yt-red transition-all duration-300" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                         </svg>
                     </div>
                     <div class="flex flex-col">
-                        <span class="font-display font-bold text-lg tracking-wide group-hover:text-neon-green transition-colors">YOUTUBE</span>
-                        <span class="text-xs text-gray-400 font-mono tracking-wider">ACESSO GRATUITO</span>
+                        <span class="text-lg font-bold text-white group-hover:text-yt-red transition-colors">Inscreva-se no YouTube</span>
+                        <span class="text-xs text-gray-400 font-light tracking-wide">Tutoriais & Mentalidade</span>
                     </div>
-                </div>
-                <div class="z-10 text-neon-green opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
-                    ➔
+                    <div class="absolute right-4 text-gray-600 group-hover:text-yt-red transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </div>
                 </div>
             </a>
 
             <!-- Instagram Button -->
-            <a href="https://www.instagram.com/migreagora/" target="_blank" class="tilt-card holo-card group relative flex items-center justify-between p-5 rounded-lg no-underline text-white overflow-hidden transform transition-transform" data-tilt-max="10">
-                <div class="flex items-center gap-4 z-10">
-                    <div class="bg-fuchsia-600/20 p-2 rounded-md border border-fuchsia-500/30 group-hover:bg-fuchsia-600/40 transition-colors">
-                        <!-- SVG Instagram -->
-                        <svg class="w-6 h-6 text-fuchsia-500 group-hover:text-fuchsia-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+            <a href="https://www.instagram.com/migreagora" target="_blank" class="tilt-element group no-underline">
+                <div class="btn-insta glass-panel rounded-xl p-4 flex items-center gap-4 transition-all duration-300 relative overflow-hidden">
+                    <div class="p-3 rounded-full bg-white/5 border border-white/10 group-hover:border-purple-500/30 transition-colors">
+                        <!-- Instagram Icon (Gradient Definition in CSS) -->
+                        <svg class="icon-insta w-8 h-8 transition-all duration-300" viewBox="0 0 24 24" fill="none" stroke="url(#insta-gradient)" stroke-width="2">
+                            <defs>
+                                <linearGradient id="insta-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#f09433" />
+                                    <stop offset="25%" style="stop-color:#e6683c" />
+                                    <stop offset="50%" style="stop-color:#dc2743" />
+                                    <stop offset="75%" style="stop-color:#cc2366" />
+                                    <stop offset="100%" style="stop-color:#bc1888" />
+                                </linearGradient>
+                            </defs>
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                         </svg>
                     </div>
                     <div class="flex flex-col">
-                        <span class="font-display font-bold text-lg tracking-wide group-hover:text-neon-green transition-colors">INSTAGRAM</span>
-                        <span class="text-xs text-gray-400 font-mono tracking-wider">CONTEÚDO DIÁRIO</span>
+                        <span class="text-lg font-bold text-white group-hover:text-[#E1306C] transition-colors">Siga no Instagram</span>
+                        <span class="text-xs text-gray-400 font-light tracking-wide">Bastidores & Insights</span>
+                    </div>
+                    <div class="absolute right-4 text-gray-600 group-hover:text-[#E1306C] transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
                 </div>
-                <div class="z-10 text-neon-green opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
-                    ➔
-                </div>
             </a>
+
         </nav>
 
+        <!-- SECTION 3: MANIFESTO (REORDERED: NOW BELOW CHANNELS) -->
+        <section class="w-full tilt-element">
+            <div class="glass-panel rounded-2xl p-8 text-center relative overflow-hidden group">
+                <!-- Subtle Gradient Overlay -->
+                <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                
+                <p class="text-gray-300 leading-relaxed text-base md:text-lg font-light relative z-10">
+                    "A <span class="text-white font-medium">Migre Agora</span> nasceu da observação de uma lacuna silenciosa no mercado. Enquanto grandes corporações investiam milhões em transformação digital, o pequeno empreendedor permanecia refém. <br><br>
+                    <span class="text-neon-green/90">Nossa missão é democratizar a eficiência.</span>"
+                </p>
+            </div>
+        </section>
+
         <!-- FOOTER -->
-        <footer class="mt-12 text-center border-t border-gray-800 pt-6 w-full">
-            <p class="text-neon-green font-display text-sm tracking-widest font-bold">MIGRE AGORA © 2025</p>
-            <p class="text-xs text-gray-600 font-mono mt-1 flex items-center justify-center gap-2">
-                <span class="inline-block w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                SYSTEM ONLINE
+        <footer class="mt-8 text-center">
+            <p class="text-[10px] md:text-xs text-gray-600 tracking-[0.3em] font-bold">
+                MIGRE AGORA AGENCY © 2025
             </p>
         </footer>
+
     </main>
 
-    <!-- JS: CANVAS ENGINE & 3D TILT PHYSICS -->
+    <!-- CREATIVE CODING SCRIPTS -->
     <script>
-        // --- 1. NEURAL CONSTELLATION ENGINE ---
-        const canvas = document.getElementById('neural-canvas');
-        const ctx = canvas.getContext('2d');
+        /**
+         * ------------------------------------------
+         * PART 2: 3D TILT PHYSICS ENGINE
+         * ------------------------------------------
+         */
+        const tiltElements = document.querySelectorAll('.tilt-element');
         
-        let width, height;
-        let particles = [];
-        const config = {
-            particleCount: 60, // Quantidade de nós
-            connectionDistance: 120, // Distância para conectar
-            mouseDistance: 150, // Raio de influência do mouse
-            baseSpeed: 0.3, // Velocidade base
-        };
-
-        let mouse = { x: null, y: null };
-        let scrollY = 0;
-        let scrollVelocity = 0;
-
-        // Resize
-        function resize() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
-            
-            // Recalculate particle count based on screen area
-            config.particleCount = Math.floor((width * height) / 12000); 
-            initParticles();
-        }
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * config.baseSpeed;
-                this.vy = (Math.random() - 0.5) * config.baseSpeed;
-                this.size = Math.random() * 2 + 1;
-                this.color = Math.random() > 0.5 ? '#4ade80' : '#2dd4bf'; // Green or Teal
-            }
-
-            update() {
-                // Scroll "Warp" Effect
-                // Quando rola a página, as partículas aceleram verticalmente
-                this.y += this.vy + (scrollVelocity * 0.5); 
-                this.x += this.vx;
-
-                // Mouse Interaction (Repulsão Suave)
-                if (mouse.x != null) {
-                    let dx = mouse.x - this.x;
-                    let dy = mouse.y - this.y;
-                    let distance = Math.sqrt(dx*dx + dy*dy);
-                    
-                    if (distance < config.mouseDistance) {
-                        const forceDirectionX = dx / distance;
-                        const forceDirectionY = dy / distance;
-                        const force = (config.mouseDistance - distance) / config.mouseDistance;
-                        const directionX = forceDirectionX * force * 2; // Força de repulsão
-                        const directionY = forceDirectionY * force * 2;
-                        
-                        this.x -= directionX;
-                        this.y -= directionY;
-                    }
-                }
-
-                // Screen Wrap (Infinite Loop)
-                if (this.x < 0) this.x = width;
-                if (this.x > width) this.x = 0;
-                if (this.y < 0) this.y = height;
-                if (this.y > height) this.y = 0;
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-            }
-        }
-
-        function initParticles() {
-            particles = [];
-            for (let i = 0; i < config.particleCount; i++) {
-                particles.push(new Particle());
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, width, height);
-            
-            // Decay scroll velocity
-            scrollVelocity *= 0.95;
-
-            // Update & Draw Particles
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-
-                // Draw Connections
-                for (let j = i; j < particles.length; j++) {
-                    let dx = particles[i].x - particles[j].x;
-                    let dy = particles[i].y - particles[j].y;
-                    let distance = Math.sqrt(dx*dx + dy*dy);
-
-                    if (distance < config.connectionDistance) {
-                        ctx.beginPath();
-                        let opacity = 1 - (distance / config.connectionDistance);
-                        ctx.strokeStyle = `rgba(74, 222, 128, ${opacity * 0.2})`; // Green transparency
-                        ctx.lineWidth = 1;
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-            requestAnimationFrame(animate);
-        }
-
-        // Event Listeners
-        window.addEventListener('resize', resize);
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.x;
-            mouse.y = e.y;
-        });
-        window.addEventListener('mouseleave', () => {
-            mouse.x = null;
-            mouse.y = null;
+        tiltElements.forEach(el => {
+            el.addEventListener('mousemove', handleMove);
+            el.addEventListener('mouseleave', handleLeave);
         });
         
-        let lastScrollTop = 0;
-        window.addEventListener('scroll', () => {
-            const st = window.pageYOffset || document.documentElement.scrollTop;
-            scrollVelocity = st - lastScrollTop;
-            lastScrollTop = st <= 0 ? 0 : st;
-        }, false);
-
-        // Init
-        resize();
-        animate();
-
-
-        // --- 2. 3D TILT EFFECT (PHYSICS) ---
-        const cards = document.querySelectorAll('.tilt-card');
-
-        cards.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left; // Mouse x position within the element
-                const y = e.clientY - rect.top; // Mouse y position within the element
-                
-                // Calculate percentage
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                
-                // Get Max Tilt from data attribute or default to 10
-                const maxTilt = card.getAttribute('data-tilt-max') || 10;
-                
-                // Calculate rotation (inverting Y axis for natural feel)
-                const rotateX = ((y - centerY) / centerY) * -maxTilt; 
-                const rotateY = ((x - centerX) / centerX) * maxTilt;
-
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-            });
-
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
-            });
-        });
+        function handleMove(e) {
+            // "this" refers to the element
+            const el = this;
+            const height = el.clientHeight;
+            const width = el.clientWidth;
+            
+            // Calculate position of cursor relative to element
+            const rect = el.getBoundingClientRect();
+            const xVal = e.clientX - rect.left;
+            const yVal = e.clientY - rect.top;
+            
+            // Calculate rotation (Sensitivity: 15deg)
+            const yRotation = 15 * ((xVal - width / 2) / width);
+            const xRotation = -15 * ((yVal - height / 2) / height);
+            
+            // CSS Transform string
+            // perspective(1000px) creates the 3D depth
+            // scale(1.02) adds a slight lift
+            const string = `perspective(1000px) scale(1.02) rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
+            
+            el.style.transform = string;
+        }
+        
+        function handleLeave() {
+            // Reset to flat state smoothly
+            this.style.transform = `perspective(1000px) scale(1) rotateX(0) rotateY(0)`;
+        }
 
     </script>
 </body>
