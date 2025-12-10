@@ -54,8 +54,7 @@
             overflow-x: hidden;
             font-family: 'Space Grotesk', sans-serif;
             -webkit-font-smoothing: antialiased;
-            /* CRITICAL: Transparent background to allow video (z-index -20) to show through */
-            background-color: transparent; 
+            background-color: #000; /* Default to black */
         }
 
         ::-webkit-scrollbar {
@@ -117,23 +116,31 @@
         .btn-insta:hover .icon-insta {
             filter: drop-shadow(0 0 8px #E1306C);
         }
+        
+        /* MIX BLEND FIX FOR LOGO */
+        .logo-blend {
+            mix-blend-mode: screen;
+            /* Contrast and Brightness helps push dark greys to pure black for better removal */
+            filter: contrast(1.2) brightness(1.1) drop-shadow(0 0 35px rgba(74, 222, 128, 0.6));
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center selection:bg-neon-green selection:text-black relative">
 
     <!-- VIDEO BACKGROUND -->
-    <!-- bg-[#050505] acts as a fallback if video fails to load, but the video sits on top -->
-    <div class="fixed top-0 left-0 w-full h-full -z-20 overflow-hidden bg-[#050505]">
-        <video id="bg-video" autoplay loop muted playsinline webkit-playsinline class="w-full h-full object-cover opacity-90">
+    <!-- Removed bg-[#050505] from container so it doesn't hide video -->
+    <div class="fixed top-0 left-0 w-full h-full -z-20 overflow-hidden bg-transparent">
+        <video id="bg-video" autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover opacity-100">
             <source src="00:04.mp4" type="video/mp4">
-            Your browser does not support the video tag.
+            <!-- Fallback text just in case -->
         </video>
     </div>
 
     <!-- OVERLAY SHADOW -->
-    <div class="fixed top-0 left-0 w-full h-full -z-10 bg-black/70 pointer-events-none"></div>
+    <!-- Reduced opacity to 50% to make video more visible -->
+    <div class="fixed top-0 left-0 w-full h-full -z-10 bg-black/50 pointer-events-none"></div>
 
-    <main class="w-full max-w-2xl px-6 py-12 flex flex-col items-center gap-10 z-10">
+    <main class="w-full max-w-2xl px-6 py-12 flex flex-col items-center gap-10 z-10 relative">
         
         <!-- SECTION 1: HERO -->
         <header class="flex flex-col items-center text-center space-y-4 animate-float">
@@ -141,12 +148,13 @@
             <div class="tilt-element cursor-pointer mb-2">
                 <!-- 
                    UPDATES: 
-                   1. mix-blend-screen: Removes black background from the image (makes black transparent).
-                   2. w-64: Increased size (approx 256px).
+                   1. mix-blend-screen: Removes black background.
+                   2. filter: contrast(1.2): Helps remove greyish blacks.
                 -->
                 <img src="logo.png" alt="Migre Agora Logo" 
-                     class="w-64 mix-blend-screen object-contain logo-glow transition-transform duration-500 hover:scale-105">
-            </div>    
+                     class="w-64 logo-blend object-contain transition-transform duration-500 hover:scale-105">
+            </div>
+
             <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-white mt-4">
                 MIGRE AGORA
             </h1>
@@ -235,21 +243,37 @@
     <script>
         /**
          * ------------------------------------------
-         * PART 1: MOBILE VIDEO AUTOPLAY FIX
+         * PART 1: ROBUST VIDEO LOADER
          * ------------------------------------------
          */
-        document.addEventListener('touchstart', function() {
-            const video = document.getElementById('bg-video');
-            if (video && video.paused) {
-                video.play().catch(e => console.log('Video play error:', e));
-            }
-        }, { once: true });
+        const video = document.getElementById('bg-video');
 
-        // Backup: Try playing immediately in case browser allows it
-        window.addEventListener('load', function() {
-            const video = document.getElementById('bg-video');
-            if (video) video.play().catch(e => console.log('Autoplay blocked, waiting for touch.'));
+        // Function to attempt play
+        const attemptPlay = () => {
+            if (video && video.paused) {
+                video.play().catch(e => console.log('Video autoplay restrained, waiting for interaction...'));
+            }
+        };
+
+        // Attempt immediately
+        attemptPlay();
+
+        // Attempt on any user interaction (Critical for Mobile)
+        const userEvents = ['touchstart', 'click', 'scroll', 'keydown'];
+        userEvents.forEach(event => {
+            document.addEventListener(event, function() {
+                attemptPlay();
+            }, { once: true });
         });
+        
+        // Polling check (Aggressive fallback)
+        const checkInterval = setInterval(() => {
+            if (video && !video.paused) {
+                clearInterval(checkInterval); // Stop checking once playing
+            } else {
+                attemptPlay();
+            }
+        }, 1000);
 
         /**
          * ------------------------------------------
@@ -264,30 +288,23 @@
         });
         
         function handleMove(e) {
-            // "this" refers to the element
             const el = this;
             const height = el.clientHeight;
             const width = el.clientWidth;
             
-            // Calculate position of cursor relative to element
             const rect = el.getBoundingClientRect();
             const xVal = e.clientX - rect.left;
             const yVal = e.clientY - rect.top;
             
-            // Calculate rotation (Sensitivity: 15deg)
             const yRotation = 15 * ((xVal - width / 2) / width);
             const xRotation = -15 * ((yVal - height / 2) / height);
             
-            // CSS Transform string
-            // perspective(1000px) creates the 3D depth
-            // scale(1.02) adds a slight lift
             const string = `perspective(1000px) scale(1.02) rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
             
             el.style.transform = string;
         }
         
         function handleLeave() {
-            // Reset to flat state smoothly
             this.style.transform = `perspective(1000px) scale(1) rotateX(0) rotateY(0)`;
         }
     </script>
