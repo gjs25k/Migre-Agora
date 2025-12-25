@@ -12,436 +12,439 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migre Agora | Tecnologia contra Taxas</title>
     
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#00df82',
+                            dark: '#00b368',
+                            light: '#33e69b'
+                        }
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        /* BASE & RESET */
-        :root {
-            --neon-green: #4ade80;
-            --dark-void: #050505;
+        /* Estilos Personalizados para Barra de Rolagem e Animações */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
         
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .slide-up {
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
         body {
-            background-color: var(--dark-void);
+            background-color: #09090b; /* Zinc 950 */
             color: white;
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-        }
-
-        h1, h2, h3, .brand-font {
-            font-family: 'Rajdhani', sans-serif;
-        }
-
-        /* CANVAS LAYER - Updated Z-Index for visibility */
-        #bg-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0; /* Changed from -1 to 0 to ensure it sits above body background */
-            pointer-events: none;
-        }
-
-        /* NEON FRAME */
-        .neon-frame {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            border: 1px solid var(--neon-green);
-            box-shadow: inset 0 0 20px rgba(74, 222, 128, 0.1);
-            pointer-events: none;
-            z-index: 50;
-        }
-
-        /* GLASSMORPHISM UTILS */
-        .glass-card {
-            background: rgba(10, 10, 10, 0.6); /* Slightly darker for better text contrast */
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(74, 222, 128, 0.15); /* Greenish tint border */
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .glass-btn {
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .glass-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(74, 222, 128, 0.2), /* Green highlight */
-                transparent
-            );
-            transition: 0.5s;
-        }
-
-        .glass-btn:hover::before {
-            left: 100%;
-        }
-
-        /* GLOW EFFECTS */
-        .text-glow {
-            text-shadow: 0 0 15px rgba(74, 222, 128, 0.6), 0 0 30px rgba(74, 222, 128, 0.4);
-        }
-
-        .glow-red:hover {
-            border-color: rgba(239, 68, 68, 0.8);
-            box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
-        }
-
-        .glow-purple:hover {
-            border-color: rgba(168, 85, 247, 0.8);
-            box-shadow: 0 0 25px rgba(168, 85, 247, 0.4);
-        }
-
-        /* MIST OVERLAY */
-        .mist-overlay {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 50vh;
-            background: linear-gradient(to top, rgba(5, 5, 5, 1) 0%, rgba(5, 5, 5, 0.5) 40%, transparent 100%);
-            z-index: 5; /* Above canvas, below content */
-            pointer-events: none;
-        }
-
-        /* ANIMATIONS */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        /* SCROLLBAR HIDE */
-        ::-webkit-scrollbar {
-            width: 0px;
-            background: transparent;
         }
     </style>
 </head>
-<body class="antialiased selection:bg-green-500 selection:text-black">
+<body class="antialiased min-h-screen flex justify-center bg-black selection:bg-brand selection:text-black">
 
-    <!-- CANVAS BACKGROUND -->
-    <canvas id="bg-canvas"></canvas>
-    
-    <!-- MIST FOG -->
-    <div class="mist-overlay"></div>
-
-    <!-- BORDER FRAME -->
-    <div class="neon-frame"></div>
-
-    <!-- MAIN CONTAINER -->
-    <main class="relative z-10 min-h-screen flex flex-col items-center justify-center p-6 md:p-12">
+    <div class="w-full max-w-md px-6 py-12 relative">
         
-        <!-- HERO SECTION -->
-        <div class="text-center mb-16 relative">
-            <!-- Logo Container -->
-            <div class="mb-10 relative inline-block group">
-                <div class="absolute -inset-4 bg-green-500 rounded-full blur-xl opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-                <!-- Logo Image with fallback logic -->
-                <!-- Increased size: w-40 h-40 (mobile) / w-64 h-64 (desktop) -->
-                <img src="logo.png" alt="MIGRE AGORA" class="relative w-40 h-40 md:w-64 md:h-64 mx-auto object-contain drop-shadow-[0_0_25px_rgba(74,222,128,0.6)]" onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';">
-                
-                <!-- Fallback Logo (displayed if image fails) -->
-                <div id="logo-fallback" class="hidden w-40 h-40 md:w-64 md:h-64 mx-auto border-[3px] border-green-400/50 rounded-full items-center justify-center bg-black/60 backdrop-blur-md text-green-400 text-6xl md:text-8xl font-bold brand-font shadow-[0_0_30px_rgba(74,222,128,0.4)] relative z-10">
-                    MA
+        <header class="text-center group mb-8 fade-in">
+            <div class="relative mb-6 mx-auto w-fit">
+                <div class="w-28 h-28 rounded-full border-4 border-brand p-1 bg-gradient-to-tr from-brand-dark to-black overflow-hidden shadow-[0_0_30px_rgba(0,223,130,0.4)] transition-transform duration-500 hover:scale-110 mx-auto">
+                    <div class="w-full h-full bg-black flex items-center justify-center rounded-full overflow-hidden">
+                        <img src="./logo.png" alt="Migre Agora Logo" class="w-4/5 h-4/5 object-contain drop-shadow-[0_0_15px_#00df82]" onerror="this.onerror=null; this.src='https://placehold.co/100x100/000000/00df82?text=MA';">
+                    </div>
+                </div>
+                <div class="absolute -bottom-2 -right-2 bg-brand text-black text-xs font-black px-2 py-1 rounded-md rotate-12 shadow-lg animate-pulse-slow">
+                    OFF-TAX
                 </div>
             </div>
-
-            <h1 class="text-5xl md:text-8xl font-bold text-white tracking-widest mb-3 brand-font text-glow animate-float" style="animation-delay: 0.1s;">
-                MIGRE AGORA
+            
+            <h1 class="text-3xl font-black tracking-tighter uppercase mb-1">
+                Migre <span class="text-brand">Agora</span>
             </h1>
-            
-            <h2 class="text-sm md:text-xl text-gray-300 tracking-[0.4em] font-light uppercase border-b border-green-500/50 pb-6 inline-block">
-                O Físico Nunca Foi o Final
-            </h2>
-        </div>
-
-        <!-- SOCIAL LINKS -->
-        <div class="w-full max-w-md space-y-5 mb-24">
-            
-            <!-- YouTube Button -->
-            <a href="https://youtube.com/@MigreAgora" target="_blank" class="tilt-card glass-btn glow-red flex items-center justify-between p-5 rounded-2xl group cursor-pointer no-underline text-white">
-                <div class="flex items-center gap-5">
-                    <div class="w-14 h-14 rounded-full bg-red-500/20 flex items-center justify-center border border-red-500/30 group-hover:bg-red-500/40 transition shadow-[0_0_15px_rgba(239,68,68,0.2)]">
-                        <!-- YouTube SVG -->
-                        <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
-                        </svg>
-                    </div>
-                    <div class="text-left">
-                        <div class="font-bold text-lg brand-font tracking-wide text-gray-100">Inscreva-se no YouTube</div>
-                        <div class="text-xs text-gray-400 font-mono group-hover:text-red-400 transition">@MigreAgora</div>
-                    </div>
-                </div>
-                <div class="opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-1">
-                    <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                </div>
-            </a>
-
-            <!-- Instagram Button -->
-            <a href="https://instagram.com/migreagora" target="_blank" class="tilt-card glass-btn glow-purple flex items-center justify-between p-5 rounded-2xl group cursor-pointer no-underline text-white">
-                <div class="flex items-center gap-5">
-                    <div class="w-14 h-14 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/30 group-hover:bg-purple-500/40 transition shadow-[0_0_15px_rgba(168,85,247,0.2)]">
-                        <!-- Instagram SVG -->
-                        <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                        </svg>
-                    </div>
-                    <div class="text-left">
-                        <div class="font-bold text-lg brand-font tracking-wide text-gray-100">Siga no Instagram</div>
-                        <div class="text-xs text-gray-400 font-mono group-hover:text-purple-400 transition">@migreagora</div>
-                    </div>
-                </div>
-                <div class="opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-1">
-                    <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                </div>
-            </a>
-
-        </div>
-
-        <!-- MANIFESTO -->
-        <div class="tilt-card glass-card max-w-2xl p-8 md:p-12 rounded-2xl relative overflow-hidden group border-t border-white/10">
-            <!-- Decorative corner accent -->
-            <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-green-500/20 to-transparent rounded-bl-full pointer-events-none"></div>
-            
-            <h3 class="text-green-400 text-sm font-bold tracking-[0.2em] mb-6 uppercase flex items-center gap-3">
-                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-[0_0_10px_#4ade80]"></span>
-                Manifesto
-            </h3>
-            <p class="text-gray-200 text-lg md:text-xl leading-relaxed font-light text-justify opacity-90">
-                A <strong class="text-white font-semibold">Migre Agora</strong> nasceu da observação de uma lacuna silenciosa no mercado. Enquanto grandes corporações investiam milhões em transformação digital, o pequeno empreendedor permanecia refém. Nossa missão é <span class="text-green-300 font-medium drop-shadow-sm">democratizar a eficiência</span>.
+            <p class="text-brand font-bold text-sm tracking-widest uppercase">
+                Tecnologia contra Taxas 🦅
             </p>
-            
-            <!-- Tech decoration lines -->
-            <div class="absolute bottom-5 right-5 flex space-x-1.5 opacity-60">
-                <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-bounce" style="animation-delay: 0s"></div>
-                <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-                <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+        </header>
+
+        <section class="w-full bg-zinc-900/80 border-l-4 border-brand p-6 rounded-r-xl shadow-xl backdrop-blur-sm mb-8 slide-up">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="text-2xl text-brand">⚡</span>
+                <h2 class="text-lg font-black uppercase tracking-tight">A Missão</h2>
             </div>
-        </div>
-
-        <!-- FOOTER -->
-        <footer class="mt-24 text-center pb-8">
-            <p class="text-[11px] md:text-xs text-gray-500 tracking-[0.3em] font-mono hover:text-green-400/80 transition duration-300 cursor-default uppercase">
-                Migre Agora Agency © 2025
+            <p class="text-zinc-400 text-sm leading-relaxed">
+                Nascemos de uma revolta: ver o dono do negócio trabalhar 14h por dia e deixar 
+                <span class="text-white font-bold underline decoration-brand mx-1">27% do lucro</span> 
+                na mesa de aplicativos bilionários.
             </p>
+            <p class="mt-4 text-zinc-400 text-sm leading-relaxed">
+                Acreditamos que o cliente é seu. O lucro é seu. E a liberdade digital não deveria custar uma mensalidade.
+            </p>
+            <div class="mt-4 pt-4 border-t border-zinc-800 italic text-brand font-bold text-xs">
+                Nós construímos sua independência.
+            </div>
+        </section>
+
+        <section class="w-full bg-zinc-900 border border-zinc-800 rounded-2xl p-6 mb-8 slide-up" style="animation-delay: 0.1s;">
+            <h3 class="text-brand font-black text-xs uppercase mb-4 tracking-widest">Calculadora de Liberdade</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-[10px] text-zinc-500 uppercase font-bold mb-1 ml-1">Faturamento Mensal (R$)</label>
+                    <input type="number" id="revenueInput" placeholder="Ex: 10000" class="w-full bg-black border border-zinc-800 rounded-lg p-3 text-white focus:border-brand outline-none transition-all placeholder-zinc-700">
+                </div>
+
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="selectPlatform(this, 'ifood')" class="platform-btn bg-brand border-brand text-black text-[10px] font-black p-2 rounded-md border transition-all uppercase">iFood</button>
+                    <button onclick="selectPlatform(this, 'ubereats')" class="platform-btn bg-black border-zinc-800 text-zinc-500 hover:border-zinc-700 text-[10px] font-black p-2 rounded-md border transition-all uppercase">UberEats</button>
+                    <button onclick="selectPlatform(this, 'rappi')" class="platform-btn bg-black border-zinc-800 text-zinc-500 hover:border-zinc-700 text-[10px] font-black p-2 rounded-md border transition-all uppercase">Rappi</button>
+                </div>
+
+                <button id="calcBtn" onclick="calculateProfit()" class="w-full bg-white text-black font-black uppercase text-sm py-3 rounded-lg hover:bg-brand transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                    Ver Diagnóstico Financeiro
+                </button>
+
+                <div id="resultArea" class="hidden mt-6 pt-6 border-t border-zinc-800 space-y-4 fade-in">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-black p-3 rounded-xl border border-red-900/30 text-center">
+                            <span class="block text-[8px] text-red-500 font-black uppercase">Perda Anual</span>
+                            <span id="yearlyLossDisplay" class="text-lg font-black text-red-500 leading-none">R$ 0,00</span>
+                        </div>
+                        <div class="bg-black p-3 rounded-xl border border-brand-dark/30 text-center">
+                            <span class="block text-[8px] text-brand font-black uppercase">Recuperável</span>
+                            <span id="potentialSavingsDisplay" class="text-lg font-black text-brand leading-none">R$ 0,00</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-zinc-400 italic text-center px-4 leading-relaxed">
+                        "Você está deixando uma fatia enorme do seu trabalho duro na mesa de bilionários."
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="w-full space-y-4 mb-8 slide-up" style="animation-delay: 0.2s;">
+            <button onclick="openEbook()" class="w-full group relative flex items-center justify-between p-5 rounded-2xl transition-all duration-300 border bg-gradient-to-r from-brand to-brand-light border-transparent text-black shadow-[0_10px_30px_rgba(0,223,130,0.3)] transform hover:-translate-y-1">
+                <div class="flex items-center gap-4">
+                    <div class="relative animate-float">
+                        <span class="text-2xl">🗺️</span>
+                        <span class="absolute -top-2 -left-2 bg-white text-black text-[7px] font-black px-1 rounded animate-pulse">GRÁTIS</span>
+                    </div>
+                    <div class="flex flex-col text-left">
+                        <span class="font-black uppercase text-sm leading-none mb-1 text-black">Ler Mapa do Lucro Local</span>
+                        <span class="text-[10px] font-medium opacity-70 text-black">Guia interativo de estratégias (Pule as taxas)</span>
+                    </div>
+                </div>
+                <span class="text-xl transition-transform duration-300 group-hover:translate-x-1 text-black">➜</span>
+                <div class="absolute inset-0 bg-white/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            </button>
+
+            <a href="https://wa.me/5548991871746?text=Ol%C3%A1%2C%20quero%20conhecer%20o%20sistema%20da%20Migre%20Agora." target="_blank" class="w-full group relative flex items-center justify-between p-5 rounded-2xl transition-all duration-300 border bg-zinc-900 border-brand/20 hover:border-brand text-white transform hover:-translate-y-1">
+                <div class="flex items-center gap-4">
+                    <span class="text-2xl">🚀</span>
+                    <div class="flex flex-col text-left">
+                        <span class="font-black uppercase text-sm leading-none mb-1 text-white">Quero minha Loja Livre de Taxas</span>
+                        <span class="text-[10px] font-medium opacity-70 text-zinc-400">Fale diretamente com um especialista</span>
+                    </div>
+                </div>
+                <span class="text-xl transition-transform duration-300 group-hover:translate-x-1 text-brand">➜</span>
+            </a>
+
+            <a href="https://www.instagram.com/migreagora/" target="_blank" class="w-full group relative flex items-center justify-between p-5 rounded-2xl transition-all duration-300 border bg-zinc-900 border-zinc-800 hover:border-brand/50 text-white transform hover:-translate-y-1">
+                <div class="flex items-center gap-4">
+                    <span class="text-2xl">📸</span>
+                    <div class="flex flex-col text-left">
+                        <span class="font-black uppercase text-sm leading-none mb-1 text-white">Siga no Instagram</span>
+                        <span class="text-[10px] font-medium opacity-70 text-zinc-400">Conteúdo diário sobre lucro local</span>
+                    </div>
+                </div>
+                <span class="text-xl transition-transform duration-300 group-hover:translate-x-1 text-brand">➜</span>
+            </a>
+        </section>
+
+        <section class="w-full text-center mt-6 mb-12 slide-up" style="animation-delay: 0.3s;">
+            <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-4">
+                Próximos Negócios Independentes
+            </h3>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="h-24 rounded-xl border-2 border-dashed border-zinc-800 flex flex-col items-center justify-center group hover:border-brand/30 transition-all cursor-pointer bg-zinc-900/50">
+                    <span class="text-zinc-600 text-[10px] font-bold uppercase group-hover:text-brand">Vaga Disponível</span>
+                    <span class="text-zinc-700 text-[8px] mt-1 group-hover:text-brand/70 tracking-widest uppercase">Setor Alimentar</span>
+                </div>
+                <div class="h-24 rounded-xl border-2 border-dashed border-zinc-800 flex flex-col items-center justify-center group hover:border-brand/30 transition-all cursor-pointer bg-zinc-900/50">
+                    <span class="text-zinc-600 text-[10px] font-bold uppercase group-hover:text-brand">Sua Loja Aqui</span>
+                    <span class="text-zinc-700 text-[8px] mt-1 group-hover:text-brand/70 tracking-widest uppercase">Pare de perder lucro</span>
+                </div>
+            </div>
+            <p class="mt-4 text-[9px] text-zinc-600 uppercase font-bold tracking-tighter">
+                Selecione seu nicho e comece a migração hoje.
+            </p>
+        </section>
+
+        <footer class="w-full text-center mt-12 mb-6 opacity-50">
+            <div class="text-[9px] text-zinc-600 font-medium leading-loose uppercase tracking-[0.1em]">
+                © 2025 Migre Agora Inc. • Palhoça / SC<br />
+                <span class="text-zinc-500 font-black">O físico nunca foi o final.</span>
+            </div>
+            <div class="mt-4 flex items-center justify-center gap-4 text-zinc-700">
+                <div class="h-px w-8 bg-zinc-800"></div>
+                <span class="text-[8px] font-black uppercase tracking-widest">Nós servimos quem serve</span>
+                <div class="h-px w-8 bg-zinc-800"></div>
+            </div>
         </footer>
 
-    </main>
+    </div>
+
+    <div id="ebookModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 md:p-12 fade-in">
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-xl" onclick="closeEbook()"></div>
+        
+        <div class="relative w-full max-w-2xl h-[85vh] bg-zinc-900 rounded-[2.5rem] shadow-[0_0_100px_rgba(0,223,130,0.15)] flex flex-col overflow-hidden border border-zinc-800">
+            <div class="flex justify-between items-center px-8 py-6 border-b border-zinc-800/50">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+                    <span class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500">Lendo agora</span>
+                </div>
+                <button onclick="closeEbook()" class="text-zinc-500 hover:text-white transition-colors text-2xl font-light">✕</button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto px-8 py-10 md:px-16 scrollbar-hide relative">
+                <div id="ebookPages" class="h-full">
+                    </div>
+            </div>
+
+            <div class="px-8 py-8 border-t border-zinc-800/50 bg-black/20 flex flex-col items-center gap-4">
+                <div class="flex justify-between w-full max-w-sm gap-4">
+                    <button id="prevBtn" onclick="changePage(-1)" class="flex-1 py-4 px-6 rounded-2xl border-2 border-brand/20 text-brand font-black uppercase text-xs hover:bg-brand/10 transition-all disabled:opacity-20 disabled:cursor-not-allowed">
+                        ← Anterior
+                    </button>
+                    <button id="nextBtn" onclick="changePage(1)" class="flex-1 py-4 px-6 rounded-2xl bg-brand text-black font-black uppercase text-xs hover:scale-105 transition-transform">
+                        Próxima →
+                    </button>
+                </div>
+                <span id="pageIndicator" class="text-[10px] font-black uppercase tracking-widest text-zinc-600">
+                    Página 1 de 6
+                </span>
+            </div>
+        </div>
+    </div>
 
     <script>
-        /**
-         * VANILLA JS CREATIVE CODING ENGINE
-         * Theme: "Neon Monsoon"
-         * Purpose: High-performance canvas animation
-         */
+        // --- Lógica da Calculadora ---
+        let selectedPlatform = 'ifood';
 
-        const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-
-        let width, height;
-        let particles = [];
-        let meteors = [];
-
-        // IMPROVED CONFIGURATION FOR VISIBILITY
-        const CONFIG = {
-            particleCount: 90,        // More nodes
-            connectionDist: 140,      // Longer lines
-            meteorCount: 35,          // More rain
-            baseColor: { r: 74, g: 222, b: 128 }, // #4ade80
-            bgOpacity: 0.8            // Particle brightness
-        };
-
-        // Mouse tracking
-        let mouse = { x: null, y: null };
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
-        });
-        window.addEventListener('mouseleave', () => {
-            mouse.x = null;
-            mouse.y = null;
-        });
-
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            // Re-init on massive resize to keep density consistent
-            if(width > 0 && height > 0) init();
-        }
-        window.addEventListener('resize', resize);
-        
-        /* --- CLASS: NODE (The Static/Floating Network) --- */
-        class Particle {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.8;
-                this.vy = (Math.random() - 0.5) * 0.8;
-                this.size = Math.random() * 2.5 + 0.5;
-            }
-
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-
-                // Bounce off edges (keep them inside for better density)
-                if (this.x < 0 || this.x > width) this.vx *= -1;
-                if (this.y < 0 || this.y > height) this.vy *= -1;
-
-                // Mouse interaction
-                if (mouse.x != null) {
-                    let dx = mouse.x - this.x;
-                    let dy = mouse.y - this.y;
-                    let distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance < 120) {
-                        const forceDirectionX = dx / distance;
-                        const forceDirectionY = dy / distance;
-                        const force = (120 - distance) / 120;
-                        this.x -= forceDirectionX * force * 3;
-                        this.y -= forceDirectionY * force * 3;
-                    }
-                }
-            }
-
-            draw() {
-                ctx.fillStyle = `rgba(${CONFIG.baseColor.r}, ${CONFIG.baseColor.g}, ${CONFIG.baseColor.b}, 0.5)`;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        /* --- CLASS: METEOR (The Falling Neon Rain) --- */
-        class Meteor {
-            constructor() {
-                this.reset(true);
-            }
-
-            reset(initial = false) {
-                this.x = Math.random() * width;
-                this.y = initial ? Math.random() * height : -100 - Math.random() * 200;
-                this.length = 40 + Math.random() * 80;
-                this.speed = 5 + Math.random() * 10;
-                this.width = 0.5 + Math.random() * 1.5;
-                // Brightness
-                this.alpha = 0.2 + Math.random() * 0.6; 
-            }
-
-            update() {
-                this.y += this.speed;
-                if (this.y > height + 200) {
-                    this.reset();
-                }
-            }
-
-            draw() {
-                // Gradient trail for the drop
-                const gradient = ctx.createLinearGradient(this.x, this.y, this.x, this.y - this.length);
-                gradient.addColorStop(0, `rgba(${CONFIG.baseColor.r}, ${CONFIG.baseColor.g}, ${CONFIG.baseColor.b}, ${this.alpha})`);
-                gradient.addColorStop(1, `rgba(${CONFIG.baseColor.r}, ${CONFIG.baseColor.g}, ${CONFIG.baseColor.b}, 0)`);
-
-                ctx.beginPath();
-                ctx.strokeStyle = gradient;
-                ctx.lineWidth = this.width;
-                ctx.lineCap = 'round'; // Softer ends
-                ctx.moveTo(this.x, this.y);
-                ctx.lineTo(this.x, this.y - this.length);
-                ctx.stroke();
-            }
-        }
-
-        function init() {
-            particles = [];
-            meteors = [];
-            for (let i = 0; i < CONFIG.particleCount; i++) particles.push(new Particle());
-            for (let i = 0; i < CONFIG.meteorCount; i++) meteors.push(new Meteor());
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, width, height);
-
-            // 1. Draw Network Lines
-            for (let a = 0; a < particles.length; a++) {
-                for (let b = a; b < particles.length; b++) {
-                    let dx = particles[a].x - particles[b].x;
-                    let dy = particles[a].y - particles[b].y;
-                    let distance = Math.sqrt(dx*dx + dy*dy);
-
-                    if (distance < CONFIG.connectionDist) {
-                        let opacity = 1 - (distance / CONFIG.connectionDist);
-                        // Increased line opacity for visibility
-                        ctx.strokeStyle = `rgba(${CONFIG.baseColor.r}, ${CONFIG.baseColor.g}, ${CONFIG.baseColor.b}, ${opacity * 0.35})`;
-                        ctx.lineWidth = 1;
-                        ctx.beginPath();
-                        ctx.moveTo(particles[a].x, particles[a].y);
-                        ctx.lineTo(particles[b].x, particles[b].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-
-            // 2. Particles
-            particles.forEach(p => {
-                p.update();
-                p.draw();
+        function selectPlatform(btn, platform) {
+            selectedPlatform = platform;
+            // Reset styles
+            document.querySelectorAll('.platform-btn').forEach(b => {
+                b.className = "platform-btn bg-black border-zinc-800 text-zinc-500 hover:border-zinc-700 text-[10px] font-black p-2 rounded-md border transition-all uppercase";
             });
-
-            // 3. Meteors (Rain)
-            meteors.forEach(m => {
-                m.update();
-                m.draw();
-            });
-
-            requestAnimationFrame(animate);
+            // Active style
+            btn.className = "platform-btn bg-brand border-brand text-black text-[10px] font-black p-2 rounded-md border transition-all uppercase";
         }
 
-        // Boot
-        resize();
-        animate();
+        function calculateProfit() {
+            const revenue = parseFloat(document.getElementById('revenueInput').value);
+            const btn = document.getElementById('calcBtn');
+            const resultArea = document.getElementById('resultArea');
 
+            if (!revenue || isNaN(revenue)) return;
 
-        /* --- UI PHYSICS --- */
-        const tiltCards = document.querySelectorAll('.tilt-card');
-        tiltCards.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const rotateX = ((y - centerY) / centerY) * -8; // Reduced rotation for elegance
-                const rotateY = ((x - centerX) / centerX) * 8;
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
-            });
-        });
+            // Loading State
+            btn.disabled = true;
+            btn.innerText = "Analisando perdas...";
+
+            setTimeout(() => {
+                const monthlyLoss = revenue * 0.27;
+                const yearlyLoss = monthlyLoss * 12;
+                const potentialSavings = yearlyLoss * 0.9; // 90% savings estimate
+
+                document.getElementById('yearlyLossDisplay').innerText = yearlyLoss.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                document.getElementById('potentialSavingsDisplay').innerText = potentialSavings.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+                resultArea.classList.remove('hidden');
+                btn.innerText = "Recalcular";
+                btn.disabled = false;
+            }, 1000);
+        }
+
+        // --- Lógica do Ebook Viewer ---
+        let currentPage = 0;
+        const totalPages = 6;
+
+        const pagesContent = [
+            // Página 1: Capa
+            `<div class="flex flex-col items-center justify-center h-full text-center space-y-6 fade-in">
+                <div class="text-4xl font-black text-brand tracking-widest">MA</div>
+                <div class="text-7xl drop-shadow-[0_0_20px_#00df8266]">🗺️</div>
+                <h1 class="text-5xl md:text-6xl font-black leading-tight">MAPA DO<br/><span class="text-brand">LUCRO LOCAL</span></h1>
+                <p class="text-zinc-400 text-lg max-w-sm">O passo a passo para se libertar das taxas de aplicativo e vender direto para o vizinho que está com fome.</p>
+                <p class="text-brand font-bold uppercase tracking-widest text-xs">Produzido por Migre Agora</p>
+            </div>`,
+            // Página 2: Matemática
+            `<div class="space-y-6 fade-in">
+                <h2 class="text-3xl font-black text-brand uppercase tracking-tighter">💰 Por que apertar o botão certo?</h2>
+                <div class="bg-red-500/10 border-2 border-red-500 p-6 rounded-2xl">
+                    <p class="text-lg font-bold">📊 O iFood te cobra até 27% por pedido.</p>
+                    <p class="text-zinc-400 mt-2 text-sm">Num açaí de R$ 30,00, eles ficam com quase <span class="text-red-500 font-black">R$ 8,00</span>.</p>
+                </div>
+                <div class="bg-brand/10 border-2 border-brand p-6 rounded-2xl text-lg font-black text-center">
+                    Com o Tráfego Local, você usa esses mesmos R$ 8,00 para mostrar seu açaí para até <span class="text-brand">1.000 pessoas</span> que moram a 2km da sua loja.
+                </div>
+                <div class="bg-brand/10 border-l-4 border-brand p-4 text-brand font-bold italic">
+                    🎯 O cliente é SEU, não do aplicativo.
+                </div>
+                <p class="text-zinc-400 text-sm leading-relaxed">
+                    Quando você impulsiona corretamente no Instagram ou Facebook, você constrói sua própria base de clientes. Eles salvam seu número, te seguem, e voltam a pedir direto com você.
+                </p>
+            </div>`,
+            // Página 3: Passo 1
+            `<div class="space-y-6 fade-in">
+                <h2 class="text-3xl font-black text-brand uppercase tracking-tighter">📸 Passo 1: A Isca Perfeita</h2>
+                <p class="text-red-500 font-black text-lg">❌ Não impulsione foto de "Bom dia" ou frases motivacionais.</p>
+                <div class="bg-zinc-800/50 p-6 rounded-2xl space-y-4">
+                    <h4 class="text-brand font-black uppercase text-sm tracking-widest">✅ Checklist da Foto que Vende:</h4>
+                    <div class="flex gap-4 items-start">
+                        <span class="bg-brand text-black w-6 h-6 rounded-full flex items-center justify-center font-black text-xs shrink-0">1</span>
+                        <p class="text-sm text-zinc-300"><strong>Foto de comida que dá fome (Foodporn).</strong> Close no produto. Mostre a calda escorrendo. Deixe a pessoa com água na boca.</p>
+                    </div>
+                    <div class="flex gap-4 items-start">
+                        <span class="bg-brand text-black w-6 h-6 rounded-full flex items-center justify-center font-black text-xs shrink-0">2</span>
+                        <p class="text-sm text-zinc-300"><strong>Legenda curta com Chamada para Ação (CTA):</strong> "Bateu a fome? Peça agora pelo link na bio."</p>
+                    </div>
+                </div>
+                <div class="bg-yellow-500 text-black p-4 rounded-xl font-bold text-sm">
+                    ⭐ DICA DE OURO: Vídeos curtos (Reels) da calda caindo funcionam 3x mais.
+                </div>
+            </div>`,
+            // Página 4: Passo 2
+            `<div class="space-y-6 fade-in">
+                <h2 class="text-3xl font-black text-brand uppercase tracking-tighter">📍 Passo 2: O Segredo do Pino</h2>
+                <div class="space-y-2 text-zinc-300 text-sm">
+                    <p><strong>1.</strong> Clique no botão verde <strong>"Turbinar Publicação"</strong></p>
+                    <p><strong>2.</strong> Meta: Selecione <strong>"Mais visitas ao perfil"</strong></p>
+                    <p><strong>3.</strong> Público: <span class="text-red-500 font-black italic underline">NÃO USE O AUTOMÁTICO</span>. Selecione <strong>"Criar o seu"</strong></p>
+                </div>
+                <div class="bg-gradient-to-br from-brand to-brand-dark p-6 rounded-2xl text-black">
+                    <h3 class="font-black text-lg mb-3 uppercase italic">🎯 O GRANDE SEGREDO:</h3>
+                    <p class="text-sm font-bold mb-2">4. Em Localização, escolha "Local".</p>
+                    <p class="text-sm font-bold mb-2">5. Coloque o PINO em cima da sua loja.</p>
+                    <p class="text-sm font-bold">6. Defina o raio para 2km a 3km.</p>
+                </div>
+                <div class="border-l-4 border-brand p-4 bg-brand/5 italic text-sm text-zinc-400">
+                    Isso garante que só quem mora no seu bairro vai ver. Você não gasta dinheiro mostrando anúncio pra quem mora longe.
+                </div>
+            </div>`,
+            // Página 5: Investimento
+            `<div class="space-y-6 fade-in">
+                <h2 class="text-3xl font-black text-brand uppercase tracking-tighter">💵 Passo 3: O Investimento</h2>
+                <div class="bg-brand/10 border-2 border-brand/30 p-6 rounded-2xl space-y-2">
+                    <p class="text-lg font-black text-brand">💰 Comece com R$ 6,00 a R$ 10,00 por dia.</p>
+                    <p class="text-sm text-zinc-400 italic">Duração: Deixe rodando por 5 a 7 dias.</p>
+                </div>
+                <div class="bg-brand/10 p-6 rounded-2xl text-center">
+                    <span class="block text-brand font-black uppercase text-xs mb-2">A conta é simples:</span>
+                    <p class="text-sm text-zinc-300">Se você vender apenas <strong>1 açaí a mais por dia</strong>, o anúncio já se pagou. O resto é <strong>lucro puro</strong>.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-zinc-800/50 p-3 rounded-xl border border-brand/10">
+                        <span class="block text-[10px] text-brand font-black uppercase">Alcance</span>
+                        <span class="text-sm font-bold">~2.000 pessoas</span>
+                    </div>
+                    <div class="bg-zinc-800/50 p-3 rounded-xl border border-brand/10">
+                        <span class="block text-[10px] text-brand font-black uppercase">Pedidos</span>
+                        <span class="text-sm font-bold">3 a 10 diretos</span>
+                    </div>
+                </div>
+            </div>`,
+            // Página 6: Conclusão
+            `<div class="space-y-6 text-center fade-in">
+                <h2 class="text-3xl font-black text-brand uppercase tracking-tighter">🚀 Agora é com Você!</h2>
+                <p class="text-zinc-300">Para converter esse cliente de forma profissional, você precisa de:</p>
+                <ul class="text-left space-y-2 text-sm text-zinc-400 mx-auto max-w-sm">
+                    <li class="flex gap-2 items-center"><span class="text-brand font-black">✓</span> Cardápio digital sem taxas</li>
+                    <li class="flex gap-2 items-center"><span class="text-brand font-black">✓</span> Estratégia de conversão no Direct</li>
+                    <li class="flex gap-2 items-center"><span class="text-brand font-black">✓</span> Sistema de pedidos organizado</li>
+                </ul>
+                <div class="bg-gradient-to-r from-brand to-brand-dark p-8 rounded-3xl text-black space-y-4 shadow-[0_10px_40px_rgba(0,223,130,0.3)]">
+                    <h3 class="font-black text-xl uppercase italic">Precisa de ajuda?</h3>
+                    <p class="text-sm font-bold opacity-90">A Migre Agora ajuda você a montar todo o sistema e dominar seu bairro.</p>
+                    <button onclick="window.open('https://wa.me/5548991871746?text=Ol%C3%A1%2C%20conclui%20a%20leitura%20do%20mapa%20e%20quero%20conhecer%20os%20pr%C3%B3ximos%20passos!')" class="bg-black text-brand font-black px-6 py-3 rounded-full text-sm uppercase hover:scale-105 transition-transform w-full shadow-lg">
+                        💬 Falar com o Especialista
+                    </button>
+                </div>
+                <div class="pt-6 opacity-40">
+                    <span class="text-xs font-black tracking-widest uppercase">Migre Agora</span>
+                </div>
+            </div>`
+        ];
+
+        function renderPage() {
+            const container = document.getElementById('ebookPages');
+            container.innerHTML = pagesContent[currentPage];
+            
+            // Update buttons state
+            document.getElementById('prevBtn').disabled = currentPage === 0;
+            const nextBtn = document.getElementById('nextBtn');
+            nextBtn.innerText = currentPage === totalPages - 1 ? 'Concluir' : 'Próxima →';
+            
+            // Update indicator
+            document.getElementById('pageIndicator').innerText = `Página ${currentPage + 1} de ${totalPages}`;
+        }
+
+        function openEbook() {
+            currentPage = 0;
+            renderPage();
+            document.getElementById('ebookModal').classList.remove('hidden');
+        }
+
+        function closeEbook() {
+            document.getElementById('ebookModal').classList.add('hidden');
+        }
+
+        function changePage(delta) {
+            const newPage = currentPage + delta;
+            if (newPage >= 0 && newPage < totalPages) {
+                currentPage = newPage;
+                renderPage();
+            } else if (newPage >= totalPages) {
+                closeEbook();
+            }
+        }
     </script>
 </body>
 </html>
